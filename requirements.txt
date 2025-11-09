@@ -1,0 +1,4 @@
+# Requirements for Task Management Application
+# Tkinter is included with Python standard library
+# tkcalendar for date picker widget
+tkcalendar==1.6.1
