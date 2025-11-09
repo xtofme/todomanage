@@ -9,11 +9,11 @@ from typing import List
 from task_model import Task, Priority, TaskStatus
 
 try:
-    from win10toast import ToastNotifier
+    from winotify import Notification, audio
     NOTIFICATIONS_AVAILABLE = True
 except ImportError:
     NOTIFICATIONS_AVAILABLE = False
-    print("win10toast non disponible. Les notifications ne seront pas envoyées.")
+    print("winotify non disponible. Les notifications ne seront pas envoyées.")
 
 
 class NotificationManager:
@@ -21,7 +21,6 @@ class NotificationManager:
 
     def __init__(self, task_manager):
         self.task_manager = task_manager
-        self.toaster = ToastNotifier() if NOTIFICATIONS_AVAILABLE else None
         self.scheduler_thread = None
         self.running = False
 
@@ -77,7 +76,7 @@ class NotificationManager:
 
     def send_notification(self):
         """Send notification with important tasks"""
-        if not NOTIFICATIONS_AVAILABLE or not self.toaster:
+        if not NOTIFICATIONS_AVAILABLE:
             print("Notifications non disponibles sur ce système")
             return
 
@@ -85,33 +84,33 @@ class NotificationManager:
         message = self.format_notification_message(tasks)
 
         try:
-            self.toaster.show_toast(
-                "Gestionnaire de Tâches - Rappel du matin",
-                message,
-                duration=10,
-                icon_path=None,
-                threaded=True
+            toast = Notification(
+                app_id="Gestionnaire de Tâches",
+                title="Rappel du matin",
+                msg=message,
+                duration="short"
             )
+            toast.show()
             print(f"[{datetime.now().strftime('%H:%M:%S')}] Notification envoyée")
         except Exception as e:
             print(f"Erreur lors de l'envoi de la notification: {e}")
 
     def send_test_notification(self):
         """Send a test notification immediately"""
-        if not NOTIFICATIONS_AVAILABLE or not self.toaster:
+        if not NOTIFICATIONS_AVAILABLE:
             return False
 
         try:
             tasks = self.get_important_tasks()
             message = self.format_notification_message(tasks)
 
-            self.toaster.show_toast(
-                "Gestionnaire de Tâches - Test",
-                message,
-                duration=5,
-                icon_path=None,
-                threaded=True
+            toast = Notification(
+                app_id="Gestionnaire de Tâches",
+                title="Test de notification",
+                msg=message,
+                duration="short"
             )
+            toast.show()
             return True
         except Exception as e:
             print(f"Erreur lors du test de notification: {e}")

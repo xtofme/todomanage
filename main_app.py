@@ -266,7 +266,7 @@ class TaskManagerApp:
         else:
             messagebox.showinfo("Notifications",
                               "Les notifications ne sont pas disponibles.\n"
-                              "Installez win10toast: pip install win10toast")
+                              "Installez winotify: pip install winotify")
 
     def on_closing(self):
         """Handle application closing"""
