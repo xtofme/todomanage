@@ -8,6 +8,7 @@ from typing import Optional
 from task_model import Task, Priority, TaskStatus
 from task_manager import TaskManager
 from task_dialog import TaskDialog
+from notification_manager import NotificationManager
 
 
 class TaskManagerApp:
@@ -21,8 +22,20 @@ class TaskManagerApp:
         self.task_manager = TaskManager()
         self.current_filter = "all"
 
+        # Initialize notification manager
+        self.notification_manager = NotificationManager(self.task_manager)
+        self.notification_enabled = False
+
         self.setup_ui()
         self.refresh_task_list()
+
+        # Start notifications if available
+        if self.notification_manager.start("09:30"):
+            self.notification_enabled = True
+            self.status_var.set("Prêt - Notifications activées (9h30)")
+
+        # Handle window close
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def setup_ui(self):
         """Setup the user interface"""
@@ -107,6 +120,8 @@ class TaskManagerApp:
                   command=self.mark_done).pack(side=tk.LEFT, padx=5)
         ttk.Button(button_frame, text="Actualiser",
                   command=self.refresh_task_list).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="🔔 Test notification",
+                  command=self.test_notification).pack(side=tk.LEFT, padx=5)
 
         # Status bar
         self.status_var = tk.StringVar()
@@ -243,6 +258,22 @@ class TaskManagerApp:
     def on_task_double_click(self, event):
         """Handle double-click on task"""
         self.edit_task()
+
+    def test_notification(self):
+        """Send a test notification"""
+        if self.notification_manager.send_test_notification():
+            self.status_var.set("Notification de test envoyée !")
+        else:
+            messagebox.showinfo("Notifications",
+                              "Les notifications ne sont pas disponibles.\n"
+                              "Installez win10toast: pip install win10toast")
+
+    def on_closing(self):
+        """Handle application closing"""
+        # Stop notification scheduler
+        if self.notification_enabled:
+            self.notification_manager.stop()
+        self.root.destroy()
 
 
 def main():

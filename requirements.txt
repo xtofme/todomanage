@@ -2,3 +2,9 @@
 # Tkinter is included with Python standard library
 # tkcalendar for date picker widget
 tkcalendar==1.6.1
+
+# Notifications for Windows
+win10toast==0.9
+
+# Scheduler for daily notifications
+schedule==1.2.0

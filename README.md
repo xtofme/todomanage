@@ -9,6 +9,7 @@ Application desktop de gestion de tâches développée en Python avec Tkinter.
 - **Catégories** : Organiser vos tâches par catégories personnalisables
 - **Dates d'échéance** : Définir des dates limites pour vos tâches
 - **Statuts** : À faire, En cours, Terminée
+- **Notifications quotidiennes** : Rappel automatique chaque matin à 9h30 avec vos tâches urgentes, hautes priorités et en cours
 - **Filtres multiples** :
   - Toutes les tâches
   - Tâches du jour
@@ -93,6 +94,22 @@ Utilisez les boutons en haut de la fenêtre :
 3. Entrer le nom de la catégorie
 4. Cliquer sur **"Ajouter"**
 
+### Notifications quotidiennes
+
+L'application envoie automatiquement une notification Windows chaque matin à **9h30** avec :
+- Vos tâches **urgentes**
+- Vos tâches à **haute priorité**
+- Vos tâches **en cours**
+
+**Important** : Pour recevoir les notifications :
+1. L'application doit être lancée (elle peut être réduite)
+2. Les dépendances doivent être installées : `pip install -r requirements.txt`
+
+**Tester les notifications** :
+- Cliquez sur le bouton **"🔔 Test notification"** pour recevoir une notification immédiatement
+
+**Note** : Les tâches terminées ne sont pas incluses dans les notifications.
+
 ## Stockage des données
 
 Les tâches sont automatiquement sauvegardées dans le fichier `tasks.json` à la racine de l'application. Ce fichier est créé automatiquement lors de l'ajout de la première tâche.
@@ -108,13 +125,14 @@ Les tâches sont automatiquement sauvegardées dans le fichier `tasks.json` à l
 
 ```
 todomanage/
-├── main_app.py          # Application principale
-├── task_model.py        # Modèle de données pour les tâches
-├── task_manager.py      # Gestion du stockage et des opérations
-├── task_dialog.py       # Interface de dialogue pour ajouter/modifier
-├── requirements.txt     # Dépendances Python
-├── tasks.json          # Fichier de données (créé automatiquement)
-└── README.md           # Ce fichier
+├── main_app.py              # Application principale
+├── task_model.py            # Modèle de données pour les tâches
+├── task_manager.py          # Gestion du stockage et des opérations
+├── task_dialog.py           # Interface de dialogue pour ajouter/modifier
+├── notification_manager.py  # Gestion des notifications quotidiennes
+├── requirements.txt         # Dépendances Python
+├── tasks.json              # Fichier de données (créé automatiquement)
+└── README.md               # Ce fichier
 ```
 
 ## Compatibilité
