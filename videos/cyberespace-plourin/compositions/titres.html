@@ -1,0 +1,78 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; }
+    #root .lab { position: absolute; background: #EFB55B; color: #3F427E; padding: 18px 30px 14px;
+      font-family: "Archivo Black"; font-size: 104px; line-height: 1; letter-spacing: -0.01em; white-space: nowrap;
+      clip-path: inset(0% 100% 0% 0%); }
+    #root .lab.big { font-size: 132px; }
+    #root .lab span { display: inline-block; }
+    #root .fact { position: absolute; margin: 0; background: #3F427E; color: #FFF6E6; padding: 12px 24px;
+      font-family: "Inter"; font-weight: 700; font-size: 40px; line-height: 1.2; white-space: nowrap; opacity: 0; }
+    #t-flood { position: absolute; inset: 0; background: #EFB55B; opacity: 0; }
+  </style>
+  <div id="root" data-composition-id="titres" data-width="1920" data-height="1080">
+    <div id="t-h1" class="lab big" style="left:192px;top:520px"><span>UN LIEU</span></div>
+    <div id="t-h2" class="lab big" style="left:192px;top:700px"><span>MILLE USAGES</span></div>
+    <div id="t-w0" class="lab" style="left:192px;top:700px"><span>APPRENDRE</span></div>
+    <p id="t-f00" class="fact" style="left:192px;top:848px">Médiation et accompagnement numérique</p>
+    <div id="t-w1" class="lab" style="left:192px;top:700px"><span>FABRIQUER</span></div>
+    <p id="t-f10" class="fact" style="left:192px;top:848px">Fablab : imprimante 3D et outillage</p>
+    <div id="t-w2" class="lab" style="left:192px;top:700px"><span>COUDRE</span></div>
+    <p id="t-f20" class="fact" style="left:192px;top:848px">Couture et textile</p>
+    <div id="t-w3" class="lab" style="left:192px;top:700px"><span>DÉCOUPER</span></div>
+    <p id="t-f30" class="fact" style="left:192px;top:848px">Découpe vinyle et papier</p>
+    <div id="t-w4" class="lab" style="right:192px;top:700px"><span>PERSONNALISER</span></div>
+    <p id="t-f40" class="fact" style="right:192px;top:848px">T-shirts imprimés sur place</p>
+    <div id="t-w5" class="lab" style="right:192px;top:700px"><span>GRAVER</span></div>
+    <p id="t-f50" class="fact" style="right:192px;top:848px">Gravure sur bois</p>
+    <div id="t-w6" class="lab" style="left:192px;top:700px"><span>CRÉER ENSEMBLE</span></div>
+    <p id="t-f60" class="fact" style="left:192px;top:848px">Ateliers en groupe</p>
+    <p id="t-f61" class="fact" style="left:192px;top:848px">Bijoux en résine</p>
+    <div id="t-flood"></div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#t-h1", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 0.15);
+      tl.fromTo("#t-h1 span", {y: 40, opacity: 0, filter: "blur(8px)"}, {y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "expo.out"}, 0.23);
+      tl.fromTo("#t-h2", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 1.3);
+      tl.fromTo("#t-h2 span", {y: 40, opacity: 0, filter: "blur(8px)"}, {y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "expo.out"}, 1.38);
+      tl.fromTo(["#t-h1", "#t-h2"], {clipPath: "inset(0% 0% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.18, ease: "power3.in"}, 3.1);
+      tl.fromTo("#t-w0", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 3.5);
+      tl.fromTo("#t-w0 span", {y: 40, opacity: 0, filter: "blur(8px)"}, {y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "expo.out"}, 3.58);
+      tl.fromTo("#t-f00", {opacity: 0, filter: "blur(8px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out"}, 3.8);
+      tl.fromTo(["#t-w0", "#t-f00"], {clipPath: "inset(0% 0% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.18, ease: "power3.in"}, 5.87);
+      tl.fromTo("#t-w1", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 6.3);
+      tl.fromTo("#t-w1 span", {y: 40, opacity: 0, filter: "blur(8px)"}, {y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "expo.out"}, 6.38);
+      tl.fromTo("#t-f10", {opacity: 0, filter: "blur(8px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out"}, 6.6);
+      tl.fromTo(["#t-w1", "#t-f10"], {clipPath: "inset(0% 0% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.18, ease: "power3.in"}, 8.67);
+      tl.fromTo("#t-w2", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 9.05);
+      tl.fromTo("#t-w2 span", {y: 40, opacity: 0, filter: "blur(8px)"}, {y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "expo.out"}, 9.13);
+      tl.fromTo("#t-f20", {opacity: 0, filter: "blur(8px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out"}, 9.35);
+      tl.fromTo(["#t-w2", "#t-f20"], {clipPath: "inset(0% 0% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.18, ease: "power3.in"}, 11.07);
+      tl.fromTo("#t-w3", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 11.5);
+      tl.fromTo("#t-w3 span", {y: 40, opacity: 0, filter: "blur(8px)"}, {y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "expo.out"}, 11.58);
+      tl.fromTo("#t-f30", {opacity: 0, filter: "blur(8px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out"}, 11.8);
+      tl.fromTo(["#t-w3", "#t-f30"], {clipPath: "inset(0% 0% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.18, ease: "power3.in"}, 13.47);
+      tl.fromTo("#t-w4", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 13.9);
+      tl.fromTo("#t-w4 span", {y: 40, opacity: 0, filter: "blur(8px)"}, {y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "expo.out"}, 13.98);
+      tl.fromTo("#t-f40", {opacity: 0, filter: "blur(8px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out"}, 14.2);
+      tl.fromTo(["#t-w4", "#t-f40"], {clipPath: "inset(0% 0% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.18, ease: "power3.in"}, 15.870000000000001);
+      tl.fromTo("#t-w5", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 16.3);
+      tl.fromTo("#t-w5 span", {y: 40, opacity: 0, filter: "blur(8px)"}, {y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "expo.out"}, 16.38);
+      tl.fromTo("#t-f50", {opacity: 0, filter: "blur(8px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out"}, 16.6);
+      tl.fromTo(["#t-w5 span", "#t-f50"], {opacity: 1}, {opacity: 0, immediateRender: false, duration: 0.1}, 18.18);
+      tl.set("#t-w5", {opacity: 0}, 18.32);
+      tl.set("#t-flood", {opacity: 1}, 18.28);
+      tl.fromTo("#t-flood", {clipPath: "inset(700px 192px 244px 1210px)"}, {clipPath: "inset(0px 0px 0px 0px)", immediateRender: false, duration: 0.3, ease: "power3.in"}, 18.28);
+      tl.fromTo("#t-flood", {clipPath: "inset(0px 0px 0px 0px)"}, {clipPath: "inset(0px 0px 1080px 0px)", immediateRender: false, duration: 0.42, ease: "power3.inOut"}, 18.62);
+      tl.fromTo("#t-w6", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 19.0);
+      tl.fromTo("#t-w6 span", {y: 40, opacity: 0, filter: "blur(8px)"}, {y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "expo.out"}, 19.08);
+      tl.fromTo("#t-f60", {opacity: 0, filter: "blur(8px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out"}, 19.3);
+      tl.fromTo("#t-f60", {opacity: 1, filter: "blur(0px)"}, {opacity: 0, filter: "blur(6px)", immediateRender: false, duration: 0.15, ease: "power2.in"}, 21.52);
+      tl.fromTo("#t-f61", {opacity: 0, filter: "blur(8px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out"}, 21.7);
+      tl.fromTo(["#t-w6", "#t-f60", "#t-f61"], {clipPath: "inset(0% 0% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.18, ease: "power3.in"}, 23.07);
+      window.__timelines["titres"] = tl;
+    })();
+  </script>
+</template>

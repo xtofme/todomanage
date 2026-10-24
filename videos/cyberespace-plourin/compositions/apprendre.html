@@ -1,0 +1,23 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #3F427E; }
+    #apprendre-cam, #apprendre-kb { position: absolute; inset: 0; transform-origin: 40% 50%; }
+    #apprendre-img { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; object-fit: cover; }
+  </style>
+  <div id="root" data-composition-id="apprendre" data-width="1920" data-height="1080">
+    <div id="apprendre-cam">
+      <div id="apprendre-kb">
+        <img id="apprendre-img" class="clip" data-start="0" data-duration="2.8" src="assets/photos/postes.jpg" alt="Postes informatiques" />
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#apprendre-kb", {scale: 1.02}, {scale: 1.08, duration: 2.8, ease: "none"}, 0);
+      tl.fromTo("#apprendre-cam", {scale: 1.16, filter: "blur(10px)"}, {scale: 1, filter: "blur(0px)", duration: 0.4, ease: "expo.out"}, 0);
+      tl.fromTo("#apprendre-cam", {x: 0, filter: "blur(0px)"}, {x: -420, filter: "blur(24px)", immediateRender: false, duration: 0.2, ease: "power3.in"}, 2.6);
+      window.__timelines["apprendre"] = tl;
+    })();
+  </script>
+</template>

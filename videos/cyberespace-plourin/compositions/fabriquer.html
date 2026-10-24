@@ -1,0 +1,22 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #3F427E; }
+    #fabriquer-cam, #fabriquer-kb { position: absolute; inset: 0; transform-origin: 65% 45%; }
+    #fabriquer-img { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; object-fit: cover; }
+  </style>
+  <div id="root" data-composition-id="fabriquer" data-width="1920" data-height="1080">
+    <div id="fabriquer-cam">
+      <div id="fabriquer-kb">
+        <img id="fabriquer-img" class="clip" data-start="0" data-duration="2.8" src="assets/photos/fablab.jpg" alt="Établi et imprimante 3D du fablab" />
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#fabriquer-kb", {scale: 1.0}, {scale: 1.07, duration: 2.8, ease: "none"}, 0);
+      tl.fromTo("#fabriquer-cam", {x: 420, filter: "blur(24px)"}, {x: 0, filter: "blur(0px)", duration: 0.32, ease: "expo.out"}, 0);
+      window.__timelines["fabriquer"] = tl;
+    })();
+  </script>
+</template>

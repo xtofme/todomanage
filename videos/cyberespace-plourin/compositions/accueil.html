@@ -1,0 +1,22 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #3F427E; }
+    #accueil-cam, #accueil-kb { position: absolute; inset: 0; transform-origin: 63% 66%; }
+    #accueil-img { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; object-fit: cover; }
+  </style>
+  <div id="root" data-composition-id="accueil" data-width="1920" data-height="1080">
+    <div id="accueil-cam">
+      <div id="accueil-kb">
+        <img id="accueil-img" class="clip" data-start="0" data-duration="3.4" src="assets/photos/salle-postes.jpg" alt="La salle du cyberespace, rangée d'ordinateurs et écran projeté" />
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#accueil-kb", {scale: 1.0}, {scale: 1.05, duration: 3.4, ease: "none"}, 0);
+      tl.fromTo("#accueil-cam", {scale: 1, filter: "blur(0px)"}, {scale: 1.7, filter: "blur(6px)", immediateRender: false, duration: 0.35, ease: "power3.in"}, 3.05);
+      window.__timelines["accueil"] = tl;
+    })();
+  </script>
+</template>

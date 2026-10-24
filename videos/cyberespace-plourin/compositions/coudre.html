@@ -1,0 +1,22 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #3F427E; }
+    #coudre-cam, #coudre-kb { position: absolute; inset: 0; transform-origin: 50% 45%; }
+    #coudre-img { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; object-fit: cover; }
+  </style>
+  <div id="root" data-composition-id="coudre" data-width="1920" data-height="1080">
+    <div id="coudre-cam">
+      <div id="coudre-kb">
+        <img id="coudre-img" class="clip" data-start="0" data-duration="2.4" src="assets/photos/couture.jpg" alt="Machine à coudre sur une table de l'atelier" />
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#coudre-kb", {scale: 1.0}, {scale: 1.07, duration: 2.4, ease: "none"}, 0);
+      tl.fromTo("#coudre-cam", {y: 0, filter: "blur(0px)"}, {y: -320, filter: "blur(24px)", immediateRender: false, duration: 0.2, ease: "power3.in"}, 2.2);
+      window.__timelines["coudre"] = tl;
+    })();
+  </script>
+</template>

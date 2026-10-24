@@ -1,0 +1,22 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #3F427E; }
+    #decouper-cam, #decouper-kb { position: absolute; inset: 0; transform-origin: 45% 40%; }
+    #decouper-img { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; object-fit: cover; }
+  </style>
+  <div id="root" data-composition-id="decouper" data-width="1920" data-height="1080">
+    <div id="decouper-cam">
+      <div id="decouper-kb">
+        <img id="decouper-img" class="clip" data-start="0" data-duration="2.4" src="assets/photos/decoupe.jpg" alt="Une participante prépare une découpe vinyle" />
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#decouper-kb", {scale: 1.0}, {scale: 1.07, duration: 2.4, ease: "none"}, 0);
+      tl.fromTo("#decouper-cam", {y: 320, filter: "blur(24px)"}, {y: 0, filter: "blur(0px)", duration: 0.32, ease: "expo.out"}, 0);
+      window.__timelines["decouper"] = tl;
+    })();
+  </script>
+</template>
