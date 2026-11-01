@@ -1,0 +1,50 @@
+<template>
+  <style>
+    @font-face{font-family:"Archivo";font-weight:500;src:url("assets/fonts/archivo-latin-500-normal.woff2") format("woff2")}
+@font-face{font-family:"Archivo";font-weight:600;src:url("assets/fonts/archivo-latin-600-normal.woff2") format("woff2")}
+@font-face{font-family:"Archivo";font-weight:700;src:url("assets/fonts/archivo-latin-700-normal.woff2") format("woff2")}
+@font-face{font-family:"Archivo";font-weight:800;src:url("assets/fonts/archivo-latin-800-normal.woff2") format("woff2")}
+    #root { position: absolute; inset: 0; overflow: hidden; }
+    #root .lab { position: absolute; left: 96px; top: 868px; padding: 14px 26px 16px; background: #2e5c61; color: #ffffff;
+      font-family: "Archivo"; font-weight: 800; font-size: 64px; line-height: 1.05; letter-spacing: -0.01em; white-space: nowrap;
+      clip-path: inset(0% 100% 0% 0%); }
+    #root .lab.hook { top: 150px; font-size: 104px; }
+    #root .lab .w { display: inline-block; }
+  </style>
+  <div id="root" data-composition-id="titres" data-width="1920" data-height="1080">
+    <div id="ti-0" class="lab hook"><span class="w">Un</span> <span class="w">carport</span> <span class="w">ici</span> <span class="w">?</span></div>
+    <div id="ti-1" class="lab"><span class="w">Posez-le</span> <span class="w">sur</span> <span class="w">votre</span> <span class="w">photo</span></div>
+    <div id="ti-2" class="lab"><span class="w">Placez-le,</span> <span class="w">tournez-le</span></div>
+    <div id="ti-3" class="lab"><span class="w">Toit,</span> <span class="w">poteaux,</span> <span class="w">longueur,</span> <span class="w">habillage</span></div>
+    <div id="ti-4" class="lab"><span class="w">Réglez</span> <span class="w">le</span> <span class="w">soleil</span></div>
+    <div id="ti-5" class="lab"><span class="w">Générez</span> <span class="w">l'image</span></div>
+    <div id="ti-6" class="lab"><span class="w">Voyez-le</span> <span class="w">avant</span> <span class="w">de</span> <span class="w">le</span> <span class="w">construire</span></div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#ti-0", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 0.35);
+      tl.fromTo("#ti-0 .w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.14, stagger: 0.067, ease: "power2.out"}, 0.43);
+      tl.fromTo("#ti-0", {clipPath: "inset(0% 0% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.18, ease: "power3.in"}, 2.82);
+      tl.fromTo("#ti-1", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 3.5);
+      tl.fromTo("#ti-1 .w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.14, stagger: 0.067, ease: "power2.out"}, 3.58);
+      tl.fromTo("#ti-1", {clipPath: "inset(0% 0% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.18, ease: "power3.in"}, 5.42);
+      tl.fromTo("#ti-2", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 5.800000000000001);
+      tl.fromTo("#ti-2 .w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.14, stagger: 0.067, ease: "power2.out"}, 5.88);
+      tl.fromTo("#ti-2", {clipPath: "inset(0% 0% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.18, ease: "power3.in"}, 8.52);
+      tl.fromTo("#ti-3", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 10.100000000000001);
+      tl.fromTo("#ti-3 .w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.14, stagger: 0.067, ease: "power2.out"}, 10.18);
+      tl.fromTo("#ti-3", {clipPath: "inset(0% 0% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.18, ease: "power3.in"}, 14.42);
+      tl.fromTo("#ti-4", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 15.3);
+      tl.fromTo("#ti-4 .w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.14, stagger: 0.067, ease: "power2.out"}, 15.38);
+      tl.fromTo("#ti-4", {clipPath: "inset(0% 0% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.18, ease: "power3.in"}, 17.52);
+      tl.fromTo("#ti-5", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 18.2);
+      tl.fromTo("#ti-5 .w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.14, stagger: 0.067, ease: "power2.out"}, 18.28);
+      tl.fromTo("#ti-5", {clipPath: "inset(0% 0% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.18, ease: "power3.in"}, 19.22);
+      tl.fromTo("#ti-6", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.3, ease: "expo.out"}, 24.3);
+      tl.fromTo("#ti-6 .w", {opacity: 0, filter: "blur(6px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.14, stagger: 0.067, ease: "power2.out"}, 24.38);
+      tl.fromTo("#ti-6", {clipPath: "inset(0% 0% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.18, ease: "power3.in"}, 26.47);
+      window.__timelines["titres"] = tl;
+    })();
+  </script>
+</template>

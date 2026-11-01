@@ -1,0 +1,22 @@
+<template>
+  <style>
+    @font-face{font-family:"Archivo";font-weight:500;src:url("assets/fonts/archivo-latin-500-normal.woff2") format("woff2")}
+@font-face{font-family:"Archivo";font-weight:600;src:url("assets/fonts/archivo-latin-600-normal.woff2") format("woff2")}
+@font-face{font-family:"Archivo";font-weight:700;src:url("assets/fonts/archivo-latin-700-normal.woff2") format("woff2")}
+@font-face{font-family:"Archivo";font-weight:800;src:url("assets/fonts/archivo-latin-800-normal.woff2") format("woff2")}
+    #root { position: absolute; inset: 0; overflow: hidden; }
+    #avant-kb { position: absolute; inset: 0; transform-origin: 62% 70%; }
+    #avant-img { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; object-fit: cover; }
+  </style>
+  <div id="root" data-composition-id="avant" data-width="1920" data-height="1080">
+    <div id="avant-kb"><img id="avant-img" class="clip" data-start="0" data-duration="3.2" src="assets/img/terrain.jpg" alt="Maison et allée de gravier vide" /></div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#avant-kb", {scale: 1}, {scale: 1.06, duration: 3.0, ease: "none"}, 0);
+      tl.fromTo("#avant-kb", {filter: "blur(0px)"}, {filter: "blur(10px)", scale: 1.12, immediateRender: false, duration: 0.2, ease: "power3.in"}, 3.0);
+      window.__timelines["avant"] = tl;
+    })();
+  </script>
+</template>

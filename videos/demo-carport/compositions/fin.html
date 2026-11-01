@@ -1,0 +1,33 @@
+<template>
+  <style>
+    @font-face{font-family:"Archivo";font-weight:500;src:url("assets/fonts/archivo-latin-500-normal.woff2") format("woff2")}
+@font-face{font-family:"Archivo";font-weight:600;src:url("assets/fonts/archivo-latin-600-normal.woff2") format("woff2")}
+@font-face{font-family:"Archivo";font-weight:700;src:url("assets/fonts/archivo-latin-700-normal.woff2") format("woff2")}
+@font-face{font-family:"Archivo";font-weight:800;src:url("assets/fonts/archivo-latin-800-normal.woff2") format("woff2")}
+    #root { position: absolute; inset: 0; overflow: hidden; }
+    #root { background: #eef0ed; color: #1d2422; }
+    #fin-img { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; object-fit: cover; transform-origin: 0 0; }
+    #fin-title { position: absolute; left: 96px; top: 250px; margin: 0; font-family: "Archivo"; font-weight: 800; font-size: 132px; line-height: 0.98; letter-spacing: -0.02em; }
+    #fin-title .w { display: inline-block; }
+    #fin-sub { position: absolute; left: 100px; top: 560px; width: 720px; margin: 0; font-family: "Archivo"; font-weight: 500; font-size: 40px; line-height: 1.25; }
+    #fin-steps { position: absolute; left: 96px; top: 730px; padding: 16px 28px; background: #2e5c61; color: #ffffff;
+      font-family: "Archivo"; font-weight: 700; font-size: 40px; white-space: nowrap; clip-path: inset(0% 100% 0% 0%); }
+    #fin-steps .sep { color: #ffffff; padding: 0 14px; }
+  </style>
+  <div id="root" data-composition-id="fin" data-width="1920" data-height="1080">
+    <img id="fin-img" class="clip" data-start="0" data-duration="4.199999999999999" src="assets/img/resultat.jpg" alt="Photomontage du carport" />
+    <h1 id="fin-title"><span class="w">Carport</span><br /><span class="w">sur</span> <span class="w">site</span></h1>
+    <p id="fin-sub">Votre carport en 3D, sur la photo de votre terrain</p>
+    <div id="fin-steps">Chargez<span class="sep">›</span>placez<span class="sep">›</span>générez</div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#fin-img", {x: 0, y: 0, scale: 1}, {x: 940, y: 300, scale: 0.46, duration: 0.7, ease: "power3.inOut"}, 0.05);
+      tl.fromTo("#fin-title .w", {opacity: 0, filter: "blur(8px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.2, stagger: 0.09, ease: "power2.out"}, 0.55);
+      tl.fromTo("#fin-sub", {opacity: 0, filter: "blur(8px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out"}, 0.95);
+      tl.fromTo("#fin-steps", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.4, ease: "expo.out"}, 1.3);
+      window.__timelines["fin"] = tl;
+    })();
+  </script>
+</template>
