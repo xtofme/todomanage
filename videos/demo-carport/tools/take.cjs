@@ -17,7 +17,9 @@ const ease = {
 const lerp = (a, b, u) => a + (b - a) * u;
 
 // Starting state: the carport hovers 3 m up, then is lowered, dragged and turned into place.
-const START = { pitch: 2, fov: 68, camH: 1.6, yaw: 61, dist: 9.5, lat: 1.2, elev: 3, L: 6, W: 5, sunAz: 210, sunEl: 40 };
+const START = { pitch: 2, fov: 68, camH: 1.6, yaw: 60, dist: 9.5, lat: 1.2, elev: 3, L: 6, W: 5, sunAz: 210, sunEl: 40 };
+
+const TARGET = { lat: 4.9, dist: 14.5, yaw: 90 };
 
 (async () => {
   const { b, p } = await open({ width: VW, height: VH, dpr: DPR });
@@ -36,8 +38,15 @@ const START = { pitch: 2, fov: 68, camH: 1.6, yaw: 61, dist: 9.5, lat: 1.2, elev
   const rect = sel => p.evaluate(s => { const r = document.querySelector(s).getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; }, sel);
   const stage = await rect('#stage');
   // Where the carport sits on screen at the start, and where the drag should end.
-  const dragFrom = { x: stage.x + stage.w * 0.58, y: stage.y + stage.h * 0.66 };
-  const dragTo = { x: stage.x + stage.w * 0.665, y: stage.y + stage.h * 0.645 };
+  // Project a ground point (world metres) to screen, with the tool's own camera model, so the drag lands exactly.
+  const project = (x, z) => {
+    const pr = START.pitch * Math.PI / 180, th = Math.tan(START.fov * Math.PI / 360), asp = stage.w / stage.h;
+    const vy = -START.camH, yc = Math.cos(pr) * vy + Math.sin(pr) * z, zc = -Math.sin(pr) * vy + Math.cos(pr) * z;
+    return { x: stage.x + (x / (-zc * th * asp) + 1) / 2 * stage.w, y: stage.y + (1 - yc / (-zc * th)) / 2 * stage.h };
+  };
+  // Grab the slab at its centre, release it at the final spot: beside the house, open end to the street.
+  const dragFrom = project(START.lat, -START.dist);
+  const dragTo = project(TARGET.lat, -TARGET.dist);
 
   const panelScroll = async sel => p.evaluate(s => {
     const pn = document.querySelector('.panel'), el = document.querySelector(s);
@@ -75,11 +84,11 @@ const START = { pitch: 2, fov: 68, camH: 1.6, yaw: 61, dist: 9.5, lat: 1.2, elev
       await p.mouse.move(c.x, c.y);
     }
     if (t >= 3.8 && mouseDown) { await p.mouse.up(); mouseDown = false; }
-    // 3. Mouse wheel turns it: 12 notches of 3 degrees.
+    // 3. Mouse wheel turns it: 10 notches of 3 degrees.
     if (t >= 3.8 && t < 5.6) {
       c = { ...dragTo };
-      const want = Math.min(12, Math.floor(prog(t, 4.0, 5.3) * 12.999));
-      while (wheelDone < want) { await p.mouse.move(c.x, c.y); await p.mouse.wheel(0, -100); wheelDone++; }
+      const want = Math.min(10, Math.floor(prog(t, 4.0, 5.3) * 10.999));
+      while (wheelDone < want) { await p.mouse.move(c.x, c.y); await p.mouse.wheel(0, 100); wheelDone++; }
     }
     // 4. Panel scrolls to the dimensions; switch to a gable roof, 3 posts, longer, wood fascia.
     if (t >= 5.6) state.scroll = lerp(0, S_DIM, ease.inOut(prog(t, 5.8, 6.5)));

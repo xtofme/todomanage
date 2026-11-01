@@ -104,32 +104,35 @@ def fin():
     d = TOTAL - T_FIN
     css = f"""#root {{ background: {BG}; color: {FG}; }}
     #fin-img {{ position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; object-fit: cover; transform-origin: 0 0; }}
-    #fin-title {{ position: absolute; left: 96px; top: 250px; margin: 0; font-family: "Archivo"; font-weight: 800; font-size: 132px; line-height: 0.98; letter-spacing: -0.02em; }}
+    #fin-title {{ position: absolute; left: 96px; top: 200px; margin: 0; font-family: "Archivo"; font-weight: 800; font-size: 132px; line-height: 0.98; letter-spacing: -0.02em; }}
     #fin-title .w {{ display: inline-block; }}
-    #fin-sub {{ position: absolute; left: 100px; top: 560px; width: 720px; margin: 0; font-family: "Archivo"; font-weight: 500; font-size: 40px; line-height: 1.25; }}
-    #fin-steps {{ position: absolute; left: 96px; top: 730px; padding: 16px 28px; background: {TEAL}; color: {WHITE};
+    #fin-sub {{ position: absolute; left: 100px; top: 480px; width: 780px; margin: 0; font-family: "Archivo"; font-weight: 500; font-size: 40px; line-height: 1.25; }}
+    #fin-steps {{ position: absolute; left: 96px; top: 700px; padding: 16px 28px; background: {TEAL}; color: {WHITE};
       font-family: "Archivo"; font-weight: 700; font-size: 40px; white-space: nowrap; clip-path: inset(0% 100% 0% 0%); }}
+    #fin-url {{ position: absolute; left: 96px; top: 850px; margin: 0; font-family: "Archivo"; font-weight: 700; font-size: 48px; color: {TEAL}; }}
     #fin-steps .sep {{ color: {WHITE}; padding: 0 14px; }}"""
     body = f"""<img id="fin-img" class="clip" data-start="0" data-duration="{d}" src="assets/img/resultat.jpg" alt="Photomontage du carport" />
     <h1 id="fin-title"><span class="w">Carport</span><br /><span class="w">sur</span> <span class="w">site</span></h1>
-    <p id="fin-sub">Votre carport en 3D, sur la photo de votre terrain</p>
-    <div id="fin-steps">Chargez<span class="sep">›</span>placez<span class="sep">›</span>générez</div>"""
+    <p id="fin-sub">La vue 3D de votre projet, pour le dossier en mairie</p>
+    <div id="fin-steps">Chargez<span class="sep">›</span>placez<span class="sep">›</span>générez</div>
+    <p id="fin-url">cyberplourin.github.io/carport-3d</p>"""
     js = """tl.fromTo("#fin-img", {x: 0, y: 0, scale: 1}, {x: 940, y: 300, scale: 0.46, duration: 0.7, ease: "power3.inOut"}, 0.05);
       tl.fromTo("#fin-title .w", {opacity: 0, filter: "blur(8px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.2, stagger: 0.09, ease: "power2.out"}, 0.55);
       tl.fromTo("#fin-sub", {opacity: 0, filter: "blur(8px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out"}, 0.95);
-      tl.fromTo("#fin-steps", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.4, ease: "expo.out"}, 1.3);"""
+      tl.fromTo("#fin-steps", {clipPath: "inset(0% 100% 0% 0%)"}, {clipPath: "inset(0% 0% 0% 0%)", duration: 0.4, ease: "expo.out"}, 1.3);
+      tl.fromTo("#fin-url", {opacity: 0, filter: "blur(8px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.25, ease: "power2.out"}, 1.65);"""
     return scene("fin", css, body, js)
 
 
 # Overlay titles: (start, end, text, position)
 TITLES = [
-    (0.35, 3.0, "Un carport ici ?", "hook"),
+    (0.3, 3.0, "Un carport à déclarer en mairie ?", "hook"),
     (T_TOOL + 0.3, T_TOOL + 2.4, "Posez-le sur votre photo", "low"),
     (T_TOOL + 2.6, T_TOOL + 5.5, "Placez-le, tournez-le", "low"),
     (T_TOOL + 6.9, T_TOOL + 11.4, "Toit, poteaux, longueur, habillage", "low"),
     (T_TOOL + 12.1, T_TOOL + 14.5, "Réglez le soleil", "low"),
     (T_TOOL + 15.0, T_TOOL + 16.2, "Générez l'image", "low"),
-    (T_APRES + 3.7, T_FIN - 0.15, "Voyez-le avant de le construire", "low"),
+    (T_APRES + 3.45, T_FIN - 0.15, "L'image pour votre dossier en mairie", "low"),
 ]
 
 
@@ -147,7 +150,7 @@ def titres():
         f"""#root .lab {{ position: absolute; left: 96px; top: 868px; padding: 14px 26px 16px; background: {TEAL}; color: {WHITE};
       font-family: "Archivo"; font-weight: 800; font-size: 64px; line-height: 1.05; letter-spacing: -0.01em; white-space: nowrap;
       clip-path: inset(0% 100% 0% 0%); }}
-    #root .lab.hook {{ top: 150px; font-size: 104px; }}
+    #root .lab.hook {{ top: 150px; font-size: 88px; }}
     #root .lab .w {{ display: inline-block; }}""",
         "\n    ".join(html), "\n      ".join(js))
 
