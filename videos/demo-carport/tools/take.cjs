@@ -17,9 +17,10 @@ const ease = {
 const lerp = (a, b, u) => a + (b - a) * u;
 
 // Starting state: the carport hovers 3 m up, then is lowered, dragged and turned into place.
-const START = { pitch: 2, fov: 68, camH: 1.6, yaw: 60, dist: 9.5, lat: 1.2, elev: 3, L: 6, W: 5, sunAz: 210, sunEl: 40 };
+const START = { pitch: 1.2, fov: 64, camH: 1.6, yaw: 35, dist: 9.5, lat: 1.2, elev: 3, L: 7.5, W: 5, sunAz: 210, sunEl: 40 };
 
-const TARGET = { lat: 4.9, dist: 14.5, yaw: 90 };
+// Final state matches the person's reference image: flat roof, 2 posts, anthracite, 6 m.
+const TARGET = { lat: 8.9, dist: 10.5, yaw: 65 };
 
 (async () => {
   const { b, p } = await open({ width: VW, height: VH, dpr: DPR });
@@ -27,6 +28,9 @@ const TARGET = { lat: 4.9, dist: 14.5, yaw: 90 };
   await p.addStyleTag({ content: `.panel{max-height:calc(100vh - 66px);overflow:auto;scrollbar-width:thin}
     #democursor{position:fixed;left:0;top:0;width:46px;height:46px;z-index:99;pointer-events:none;transform-origin:4px 3px}` });
   await setPhoto(p, photo);
+  // The take starts from a gable, 3-post, wooden carport and is brought to the reference set-up.
+  await p.click('[data-roof="gable"]'); await p.click('[data-np="3"]');
+  await p.evaluate(() => { const s = document.getElementById('fmat'); s.value = 'bois'; s.dispatchEvent(new Event('change')); });
   for (const [k, v] of Object.entries(START)) await setSlider(p, k, v);
   await p.evaluate(() => {
     const d = document.createElement('div'); d.id = 'democursor';
@@ -44,7 +48,7 @@ const TARGET = { lat: 4.9, dist: 14.5, yaw: 90 };
     const vy = -START.camH, yc = Math.cos(pr) * vy + Math.sin(pr) * z, zc = -Math.sin(pr) * vy + Math.cos(pr) * z;
     return { x: stage.x + (x / (-zc * th * asp) + 1) / 2 * stage.w, y: stage.y + (1 - yc / (-zc * th)) / 2 * stage.h };
   };
-  // Grab the slab at its centre, release it at the final spot: beside the house, open end to the street.
+  // Grab the slab at its centre, release it at the final spot in front of the right-hand hedge.
   const dragFrom = project(START.lat, -START.dist);
   const dragTo = project(TARGET.lat, -TARGET.dist);
 
@@ -90,20 +94,20 @@ const TARGET = { lat: 4.9, dist: 14.5, yaw: 90 };
       const want = Math.min(10, Math.floor(prog(t, 4.0, 5.3) * 10.999));
       while (wheelDone < want) { await p.mouse.move(c.x, c.y); await p.mouse.wheel(0, 100); wheelDone++; }
     }
-    // 4. Panel scrolls to the dimensions; switch to a gable roof, 3 posts, longer, wood fascia.
+    // 4. Panel scrolls to the dimensions; switch to a flat roof, 2 posts, 6 m, anthracite fascia.
     if (t >= 5.6) state.scroll = lerp(0, S_DIM, ease.inOut(prog(t, 5.8, 6.5)));
     await p.evaluate(s => { document.querySelector('.panel').scrollTop = s; }, state.scroll);
-    if (t >= 5.6 && t < 7.4) { pos.gable = pos.gable || null; const tgt = await center('[data-roof="gable"]'); const u = ease.inOut(prog(t, 6.2, 7.0)); c = { x: lerp(dragTo.x, tgt.x, u), y: lerp(dragTo.y, tgt.y, u) }; }
-    if (t >= 7.1) await once('gable', () => p.click('[data-roof="gable"]'));
-    if (t >= 7.4 && t < 8.3) { const a = await center('[data-roof="gable"]'), tgt = await center('[data-np="3"]'); const u = ease.inOut(prog(t, 7.4, 7.9)); c = { x: lerp(a.x, tgt.x, u), y: lerp(a.y, tgt.y, u) }; }
-    if (t >= 8.0) await once('np3', () => p.click('[data-np="3"]'));
+    if (t >= 5.6 && t < 7.4) { const tgt = await center('[data-roof="flat"]'); const u = ease.inOut(prog(t, 6.2, 7.0)); c = { x: lerp(dragTo.x, tgt.x, u), y: lerp(dragTo.y, tgt.y, u) }; }
+    if (t >= 7.1) await once('flat', () => p.click('[data-roof="flat"]'));
+    if (t >= 7.4 && t < 8.3) { const a = await center('[data-roof="flat"]'), tgt = await center('[data-np="2"]'); const u = ease.inOut(prog(t, 7.4, 7.9)); c = { x: lerp(a.x, tgt.x, u), y: lerp(a.y, tgt.y, u) }; }
+    if (t >= 8.0) await once('np2', () => p.click('[data-np="2"]'));
     if (t >= 8.3 && t < 10.2) {
-      const a = await center('[data-np="3"]'), th0 = await thumb('L', 6);
+      const a = await center('[data-np="2"]'), th0 = await thumb('L', 7.5);
       if (t < 8.8) { const u = ease.inOut(prog(t, 8.3, 8.8)); c = { x: lerp(a.x, th0.x, u), y: lerp(a.y, th0.y, u) }; }
-      else { const v = +(lerp(6, 7.5, ease.inOut(prog(t, 8.9, 10.0)))).toFixed(1); await setSlider(p, 'L', v); c = await thumb('L', v); }
+      else { const v = +(lerp(7.5, 6, ease.inOut(prog(t, 8.9, 10.0)))).toFixed(1); await setSlider(p, 'L', v); c = await thumb('L', v); }
     }
-    if (t >= 10.2 && t < 11.0) { const a = await thumb('L', 7.5), tgt = await center('#fmat'); const u = ease.inOut(prog(t, 10.2, 10.7)); c = { x: lerp(a.x, tgt.x, u), y: lerp(a.y, tgt.y, u) }; }
-    if (t >= 10.8) await once('wood', () => p.evaluate(() => { const s = document.getElementById('fmat'); s.value = 'bois'; s.dispatchEvent(new Event('change')); }));
+    if (t >= 10.2 && t < 11.0) { const a = await thumb('L', 6), tgt = await center('#fmat'); const u = ease.inOut(prog(t, 10.2, 10.7)); c = { x: lerp(a.x, tgt.x, u), y: lerp(a.y, tgt.y, u) }; }
+    if (t >= 10.8) await once('anthracite', () => p.evaluate(() => { const s = document.getElementById('fmat'); s.value = 'anthracite'; s.dispatchEvent(new Event('change')); }));
     if (t >= 11.0 && t < 11.7) c = await center('#fmat');
     // 5. Sun: scroll to it and sweep the shadow.
     const S_SUN = await panelScroll('#g-sun');

@@ -8,7 +8,7 @@ async function open({ width = 1920, height = 1080, dpr = 4 / 3 } = {}) {
   const p = await ctx.newPage();
   await p.route('https://fonts.googleapis.com/**', r => r.fulfill({ contentType: 'text/css', body: fs.readFileSync(C + '/fonts.css', 'utf8') }));
   await p.route('https://fonts.gstatic.com/**', r => r.abort());
-  await p.goto('file://' + C + '/page.html');
+  await p.goto('file://' + C + '/' + (process.env.CARPORT_PAGE || 'page.html'));
   await p.evaluate(() => document.fonts.ready);
   return { b, p };
 }

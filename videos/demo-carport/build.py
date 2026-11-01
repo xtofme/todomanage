@@ -88,14 +88,14 @@ def apres():
     <div id="apres-wipe" style="position:absolute;left:0;top:0;width:0;height:1080px;opacity:0"><div id="apres-line"></div><div id="apres-knob"></div></div>
     <div id="apres-tag-a" class="tag">Après</div>
     <div id="apres-tag-b" class="tag">Avant</div>"""
-    # Divider sweeps in from the right to 70 %, through the carport, holds, then returns: the carport disappears and comes back.
+    # Divider sweeps in from the right to 85 %, through the carport, holds, then returns: the carport disappears and comes back.
     js = """tl.fromTo("#apres-wipe", {opacity: 0}, {opacity: 1, duration: 0.15}, 0.35);
-      tl.fromTo("#apres-before", {clipPath: "inset(0% 0% 0% 100%)"}, {clipPath: "inset(0% 0% 0% 70%)", duration: 0.9, ease: "power2.inOut"}, 0.4);
-      tl.fromTo("#apres-wipe", {x: 1920}, {x: 1344, duration: 0.9, ease: "power2.inOut"}, 0.4);
+      tl.fromTo("#apres-before", {clipPath: "inset(0% 0% 0% 100%)"}, {clipPath: "inset(0% 0% 0% 85%)", duration: 0.9, ease: "power2.inOut"}, 0.4);
+      tl.fromTo("#apres-wipe", {x: 1920}, {x: 1632, duration: 0.9, ease: "power2.inOut"}, 0.4);
       tl.fromTo(["#apres-tag-a", "#apres-tag-b"], {opacity: 0, filter: "blur(8px)"}, {opacity: 1, filter: "blur(0px)", duration: 0.2, stagger: 0.1}, 1.1);
       tl.fromTo(["#apres-tag-a", "#apres-tag-b"], {opacity: 1}, {opacity: 0, immediateRender: false, duration: 0.15}, 2.6);
-      tl.fromTo("#apres-before", {clipPath: "inset(0% 0% 0% 70%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.8, ease: "power2.inOut"}, 2.6);
-      tl.fromTo("#apres-wipe", {x: 1344}, {x: 1920, immediateRender: false, duration: 0.8, ease: "power2.inOut"}, 2.6);
+      tl.fromTo("#apres-before", {clipPath: "inset(0% 0% 0% 85%)"}, {clipPath: "inset(0% 0% 0% 100%)", immediateRender: false, duration: 0.8, ease: "power2.inOut"}, 2.6);
+      tl.fromTo("#apres-wipe", {x: 1632}, {x: 1920, immediateRender: false, duration: 0.8, ease: "power2.inOut"}, 2.6);
       tl.fromTo("#apres-wipe", {opacity: 1}, {opacity: 0, immediateRender: false, duration: 0.1}, 3.35);"""
     return scene("apres", css, body, js)
 
