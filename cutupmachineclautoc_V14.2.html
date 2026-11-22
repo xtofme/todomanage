@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Machine à Cut-Up de clotoc — V14.2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;700&amp;family=Playfair+Display:ital,wght@0,700;1,700&amp;family=Special+Elite&amp;display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --paper: #f5f0e8;
+    --ink: #1a1a1a;
+    --accent: #c23616;
+    --accent2: #e17055;
+    --ghost: rgba(194, 54, 22, 0.15);
+    --shadow: rgba(0,0,0,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--paper);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+
+  header::after {
+    content: '';
+    display: block;
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    margin: 1.5rem auto 0;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+    margin-bottom: 0.3rem;
+  }
+
+  h1 span {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .subtitle {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    color: var(--accent2);
+    font-weight: 300;
+  }
+
+  /* Inputs section */
+  .inputs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .text-block {
+    position: relative;
+  }
+
+  .text-block label {
+    display: block;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--accent2);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .text-block label span.num {
+    display: inline-block;
+    width: 1.4rem;
+    height: 1.4rem;
+    line-height: 1.4rem;
+    text-align: center;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 0.7rem;
+    margin-right: 0.5rem;
+    font-weight: 700;
+  }
+
+  textarea {
+    width: 100%;
+    height: 220px;
+    background: rgba(245, 240, 232, 0.04);
+    border: 1px solid rgba(245, 240, 232, 0.12);
+    color: var(--paper);
+    font-family: 'Special Elite', cursive;
+    font-size: 0.9rem;
+    line-height: 1.7;
+    padding: 1rem;
+    resize: vertical;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    outline: none;
+  }
+
+  textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent), inset 0 0 30px rgba(194, 54, 22, 0.05);
+  }
+
+  textarea::placeholder {
+    color: rgba(245, 240, 232, 0.2);
+    font-style: italic;
+  }
+
+  .btn-clear {
+    display: block;
+    background: transparent;
+    border: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(245, 240, 232, 0.2);
+    cursor: pointer;
+    padding: 0.2rem 0;
+    transition: color 0.2s;
+  }
+
+  .btn-clear:hover {
+    color: var(--accent);
+  }
+
+  .text-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 0.4rem;
+  }
+
+  .influence-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .influence-label {
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgba(245, 240, 232, 0.3);
+  }
+
+  .influence-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 90px;
+    height: 2px;
+    background: rgba(245, 240, 232, 0.15);
+    outline: none;
+  }
+
+  .influence-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 10px;
+    height: 10px;
+    background: var(--accent2);
+    cursor: pointer;
+    border: none;
+  }
+
+  .influence-slider::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    background: var(--accent2);
+    cursor: pointer;
+    border: none;
+    border-radius: 0;
+  }
+
+  .influence-val {
+    font-size: 0.7rem;
+    color: var(--accent2);
+    min-width: 2.5rem;
+    text-align: right;
+    font-weight: 500;
+  }
+
+  .text-block.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .text-block.full-width textarea {
+    height: 140px;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .control-group label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--accent2);
+    font-weight: 300;
+  }
+
+  .slider-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 160px;
+    height: 2px;
+    background: rgba(245, 240, 232, 0.15);
+    outline: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    cursor: pointer;
+    border: none;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--accent);
+    cursor: pointer;
+    border: none;
+    border-radius: 0;
+  }
+
+  .slider-val {
+    font-size: 0.85rem;
+    color: var(--paper);
+    min-width: 2.5rem;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .mode-btns {
+    display: flex;
+    gap: 0;
+  }
+
+  .mode-btns button {
+    background: transparent;
+    border: 1px solid rgba(245, 240, 232, 0.15);
+    color: rgba(245, 240, 232, 0.4);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 0.5rem 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .mode-btns button:hover {
+    color: var(--paper);
+    border-color: rgba(245, 240, 232, 0.3);
+  }
+
+  .mode-btns button.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+  }
+
+  /* Action buttons */
+  .actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    padding: 0.9rem 2.2rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-cut {
+    background: var(--accent);
+    color: var(--paper);
+  }
+
+  .btn-cut:hover {
+    background: #a52d13;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(194, 54, 22, 0.4);
+  }
+
+  .btn-cut:active {
+    transform: translateY(0);
+  }
+
+  .btn-reroll {
+    background: transparent;
+    color: var(--paper);
+    border: 1px solid rgba(245, 240, 232, 0.2);
+  }
+
+  .btn-reroll:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .btn-copy {
+    background: transparent;
+    color: var(--paper);
+    border: 1px solid rgba(245, 240, 232, 0.2);
+    padding: 0.9rem 1.5rem;
+  }
+
+  .btn-copy:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+
+  /* Output */
+  .output-section {
+    position: relative;
+  }
+
+  .output-section::before {
+    content: 'RÉSULTAT';
+    display: block;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .output {
+    background: rgba(245, 240, 232, 0.03);
+    border: 1px solid rgba(245, 240, 232, 0.08);
+    min-height: 250px;
+    padding: 2rem;
+    position: relative;
+  }
+
+  .output-text {
+    font-family: 'Special Elite', cursive;
+    font-size: 1.05rem;
+    line-height: 2;
+    color: var(--paper);
+    white-space: pre-wrap;
+    opacity: 0;
+    animation: fadeIn 0.8s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .output-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    color: rgba(245, 240, 232, 0.15);
+    font-style: italic;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+  }
+
+  .output-empty::before {
+    content: '✂';
+    font-size: 2rem;
+    margin-right: 1rem;
+    font-style: normal;
+  }
+
+  /* Mode papier — actif au moment de copier (texte noir sur fond crème) */
+  .output.paper-mode {
+    background: var(--paper);
+    border-color: var(--paper);
+    transition: background 0.25s ease, border-color 0.25s ease;
+  }
+
+  .output.paper-mode .output-text,
+  .output.paper-mode .fragment {
+    color: var(--ink);
+  }
+
+  .output.paper-mode .fragment:hover {
+    color: var(--accent);
+  }
+
+  /* Scatter animation for words */
+  .word-anim {
+    display: inline;
+    opacity: 0;
+    animation: wordDrop 0.4s ease forwards;
+  }
+
+  @keyframes wordDrop {
+    from { opacity: 0; filter: blur(2px); }
+    to { opacity: 1; filter: blur(0); }
+  }
+
+  /* Fragment highlight on hover */
+  .fragment {
+    display: inline;
+    transition: color 0.2s;
+    cursor: default;
+  }
+
+  .fragment:hover {
+    color: var(--accent2);
+  }
+
+  /* Seed display */
+  .seed-info {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: rgba(245, 240, 232, 0.2);
+    text-transform: uppercase;
+  }
+
+  /* Responsive */
+  .toggle-unlimited {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    padding: 0.3rem 0.7rem;
+    margin-top: 0.3rem;
+    background: transparent;
+    border: 1px solid rgba(245, 240, 232, 0.15);
+    color: rgba(245, 240, 232, 0.4);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .toggle-unlimited:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .toggle-unlimited.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+  }
+
+  .is-off { opacity: 0.25; pointer-events: none; }
+
+  /* Corpus technique permanent */
+  .tech-corpus-block {
+    margin-bottom: 2rem;
+    padding: 0.8rem 1rem;
+    background: rgba(245, 240, 232, 0.02);
+    border: 1px dashed rgba(225, 112, 85, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .tech-corpus-label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--accent2);
+  }
+
+  .tech-corpus-label::before {
+    content: '⚙';
+    font-size: 0.9rem;
+    color: var(--accent);
+  }
+
+  .tech-corpus-desc {
+    font-size: 0.6rem;
+    color: rgba(245, 240, 232, 0.35);
+    font-style: italic;
+    letter-spacing: 0.05em;
+    text-transform: none;
+    margin-left: 0.3rem;
+  }
+
+  .tech-corpus-slider-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 700px) {
+    .inputs-grid { grid-template-columns: 1fr; }
+    .controls { gap: 1.2rem; }
+    .output { padding: 1.2rem; }
+    textarea { height: 160px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Machine à <span>Cut-Up</span></h1>
+    <div class="subtitle">V14.2 · de clotoc · Découper · Mélanger · Recomposer</div>
+  </header>
+
+  <div class="inputs-grid">
+    <div class="text-block">
+      <label><span class="num">1</span> Texte source</label>
+      <textarea id="text1" placeholder="Colle ton premier texte ici..."></textarea>
+      <div class="text-footer">
+        <button class="btn-clear" onclick="document.getElementById(&#39;text1&#39;).value=&#39;&#39;">✕ effacer</button>
+        <div class="influence-wrap">
+          <span class="influence-label">influence</span>
+          <input type="range" class="influence-slider" id="influence1" min="0" max="100" value="100" oninput="updateInfluence(1)">
+          <span class="influence-val" id="influenceVal1">100%</span>
+        </div>
+      </div>
+    </div>
+    <div class="text-block">
+      <label><span class="num">2</span> Texte source</label>
+      <textarea id="text2" placeholder="Colle ton deuxième texte ici..."></textarea>
+      <div class="text-footer">
+        <button class="btn-clear" onclick="document.getElementById(&#39;text2&#39;).value=&#39;&#39;">✕ effacer</button>
+        <div class="influence-wrap">
+          <span class="influence-label">influence</span>
+          <input type="range" class="influence-slider" id="influence2" min="0" max="100" value="100" oninput="updateInfluence(2)">
+          <span class="influence-val" id="influenceVal2">100%</span>
+        </div>
+      </div>
+    </div>
+    <div class="text-block full-width">
+      <label><span class="num">3</span> Texte source <span style="opacity:0.4">(optionnel)</span></label>
+      <textarea id="text3" placeholder="Un troisième texte si tu veux..."></textarea>
+      <div class="text-footer">
+        <button class="btn-clear" onclick="document.getElementById(&#39;text3&#39;).value=&#39;&#39;">✕ effacer</button>
+        <div class="influence-wrap">
+          <span class="influence-label">influence</span>
+          <input type="range" class="influence-slider" id="influence3" min="0" max="100" value="100" oninput="updateInfluence(3)">
+          <span class="influence-val" id="influenceVal3">100%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tech-corpus-block">
+    <div class="tech-corpus-label">
+      corpus technique
+      <span class="tech-corpus-desc">specs audio, optique, codec, signal, réseau — intégré</span>
+    </div>
+    <div class="tech-corpus-slider-wrap">
+      <span class="influence-label">influence</span>
+      <input type="range" class="influence-slider" id="influenceTech" min="0" max="100" value="0" oninput="updateTechInfluence()">
+      <span class="influence-val" id="influenceValTech">0%</span>
+    </div>
+  </div>
+
+  <div class="tech-corpus-block">
+    <div class="tech-corpus-label">
+      corpus administratif
+      <span class="tech-corpus-desc">circulaires, notes de service, comitologie, langue de bois — intégré</span>
+    </div>
+    <div class="tech-corpus-slider-wrap">
+      <span class="influence-label">influence</span>
+      <input type="range" class="influence-slider" id="influenceAdmin" min="0" max="100" value="0" oninput="updateAdminInfluence()">
+      <span class="influence-val" id="influenceValAdmin">0%</span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control-group">
+      <label>Mode de découpe</label>
+      <div class="mode-btns">
+        <button data-mode="word" class="active" onclick="setMode(&#39;word&#39;, this)">Mots</button>
+        <button data-mode="group" onclick="setMode(&#39;group&#39;, this)">Groupes</button>
+        <button data-mode="line" onclick="setMode(&#39;line&#39;, this)">Vers</button>
+      </div>
+    </div>
+
+    <div class="control-group" id="sizeControl">
+      <label>Taille des fragments</label>
+      <div class="slider-wrap">
+        <input type="range" id="fragSize" min="1" max="6" value="1" oninput="updateSliderVal()">
+        <span class="slider-val" id="fragVal">1 mots</span>
+      </div>
+    </div>
+
+    <div class="control-group" id="outputControl">
+      <label>Longueur sortie</label>
+      <div class="slider-wrap" id="outputLenWrap">
+        <input type="range" id="outputLen" min="6" max="30" value="16" oninput="updateOutputLen()">
+        <span class="slider-val" id="outputVal">16 vers</span>
+      </div>
+      <button class="toggle-unlimited active" id="toggleUnlimited" onclick="toggleUnlimited()">∞ illimité</button>
+    </div>
+
+    <div class="control-group">
+      <label>Filtres</label>
+      <button class="toggle-unlimited active" id="toggleFilter" onclick="toggleFilter()">✕ articles (le, la, les...)</button>
+      <button class="toggle-unlimited active" id="toggleFlow" onclick="toggleFlow()" style="margin-top:0.2rem">flux continu</button>
+      <div class="slider-wrap" style="margin-top:0.3rem">
+        <span class="influence-label">min lettres</span>
+        <input type="range" id="minLen" min="1" max="4" value="2" oninput="updateMinLen()" style="width:90px">
+        <span class="influence-val" id="minLenVal">2</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-cut" onclick="cutUp()">✂ Découper</button>
+    <button class="btn btn-reroll" onclick="reroll()">↻ Relancer</button>
+    <button class="btn btn-copy" onclick="copyResult()">Copier</button>
+  </div>
+
+  <div class="output-section">
+    <div class="output" id="output">
+      <div class="output-empty">Colle tes textes et découpe</div>
+    </div>
+    <div class="seed-info" id="seedInfo"></div>
+  </div>
+</div>
+
+<script>
+  let currentMode = 'word';
+  let lastFragments = null;
+  let currentSeed = 0;
+  let unlimitedMode = true;
+  let filterArticles = true;
+  let minWordLen = 2;
+  let flowMode = true;
+
+  const TECH_CORPUS = `Le convertisseur analogique-numérique échantillonne le signal à 48 kHz sur 24 bits par canal. La plage dynamique atteint 120 dB en mode asymétrique. Le bruit de quantification reste inférieur à -114 dBFS. La distorsion harmonique totale est mesurée à 0,0008 pour cent à pleine échelle. La réponse en fréquence s'étend de 20 Hz à 22 kHz avec une tolérance de plus ou moins 0,1 dB. La latence de bout en bout est de 3,2 millisecondes.
+
+Fréquence d'échantillonnage : 96 kHz.
+Profondeur : 32 bits flottants.
+Latence : 0,7 ms.
+Gigue d'horloge : 1 picoseconde RMS.
+Rapport signal sur bruit : 124 dB pondéré A.
+Diaphonie interchannel : -138 dB à 1 kHz.
+Bande passante analogique : DC jusqu'à 80 kHz à -3 dB.
+Impédance d'entrée : 10 kilo-ohms.
+Sensibilité : -94 dBV par pascal.
+Niveau maximal : plus 24 dBu avant écrêtage.
+
+Le capteur plein format enregistre la lumière sur une grille de 8256 par 5504 photosites. La sensibilité native commence à 100 ISO et s'étend par extension jusqu'à 102400 ISO. La dynamique mesurée atteint 14,8 stops au gain de base. L'obturateur électronique descend à un 32000ème de seconde. La cadence de prise de vue monte à 30 images par seconde en rafale silencieuse. Le viseur électronique rafraîchit à 120 Hz avec une latence inférieure à 5 millisecondes.
+
+Ouverture : f/1,4 à f/22.
+Distance focale : 35 mm équivalent.
+Cercle de confusion : 0,03 mm.
+Résolution optique : 180 paires de lignes par millimètre.
+Distorsion géométrique : moins de 0,2 pour cent en barillet.
+Aberration chromatique latérale : 0,5 pixel au bord.
+Tirage mécanique : 16,5 mm.
+Poids : 420 grammes.
+
+Le codec compresse le flux à 50 mégabits par seconde en intra-image. La profondeur couleur est codée sur 10 bits par composante dans l'espace Rec.2020. Le sous-échantillonnage chromatique reste à 4:2:2. La cadence native est de 24 images par seconde en mode cinéma, 25 en mode télévision européen, 30 en mode Amérique du Nord. Le gamma log préserve 16 stops de plage dynamique. La matrice de couleurs supporte le wide gamut et le DCI-P3.
+
+Résolution : 3840 par 2160 pixels.
+Ratio : 16 sur 9.
+Fréquence de balayage : progressif 60 Hz.
+Densité de pixels : 163 points par pouce.
+Luminance maximale : 1600 candelas par mètre carré.
+Rapport de contraste : 1 000 000 pour 1.
+Temps de réponse : 1 milliseconde gris à gris.
+Angle de vision : 178 degrés horizontal et vertical.
+Uniformité : Delta E inférieur à 2 sur toute la surface.
+
+L'oscillateur de référence dérive de moins de 20 parties par million sur la plage de température opérationnelle. Le cristal est taillé en coupe AT et stabilisé par four à 70 degrés Celsius. La tension d'alimentation tolère des variations de plus ou moins 5 pour cent. La consommation moyenne en veille est inférieure à 80 microwatts. La dissipation thermique en charge nominale atteint 2,4 watts par boîtier.
+
+Impédance caractéristique : 50 ohms.
+Adaptation : mieux que -20 dB de retour.
+Pertes d'insertion : 0,4 dB par mètre.
+Coefficient de vélocité : 0,66.
+Tension de claquage : 1,5 kilovolt continu.
+Résistance d'isolement : 10 gigaohms à 500 volts.
+Capacité linéique : 100 picofarads par mètre.
+Inductance linéique : 250 nanohenrys par mètre.
+
+La liaison sans fil module la porteuse à 2,4 gigahertz avec une largeur de canal de 20 mégahertz. Le débit brut culmine à 600 mégabits par seconde en modulation 256-QAM. La puissance d'émission reste sous la limite réglementaire de 100 milliwatts. La sensibilité en réception descend à -96 dBm pour un taux d'erreur binaire de 10 puissance moins 5. La latence radio oscille entre 2 et 8 millisecondes selon l'encombrement du canal.
+
+Débit montant : 40 mégabits par seconde.
+Débit descendant : 300 mégabits par seconde.
+Jitter : moins de 3 ms sur 100 paquets.
+Perte : 0,01 pour cent en conditions nominales.
+Taille de paquet : 1500 octets maximum.
+Temps de traversée : 12 microsecondes.
+Mémoire tampon : 8 mégaoctets par port.
+File d'attente : profondeur 512 trames.
+
+Le transducteur restitue les graves à partir de 35 Hz à moins 6 dB. La bobine mobile pèse 12 grammes et se déplace sur une excursion linéaire de plus ou moins 4 millimètres. L'aimant en néodyme délivre un flux magnétique de 1,4 tesla dans l'entrefer. La sensibilité atteint 89 dB SPL à 1 watt mesuré à 1 mètre. La puissance admissible en régime permanent est de 150 watts RMS. L'impédance nominale reste stable à 8 ohms sur toute la bande utile.
+
+Pression acoustique maximale : 112 dB SPL.
+Distorsion à 1 kHz : 0,3 pour cent à 90 dB.
+Directivité : omnidirectionnelle jusqu'à 2 kHz.
+Facteur de qualité : 0,707 en enceinte close.
+Fréquence de résonance : 42 Hz à l'air libre.
+Déplacement maximal : 8 millimètres crête à crête.
+Température de Curie : 310 degrés Celsius.
+Coefficient de température : plus 0,4 pour cent par Kelvin.
+
+Le processeur exécute 3,8 milliards de cycles par seconde sur chacun de ses 16 cœurs. Le cache de niveau 3 partage 32 mégaoctets entre tous les cœurs. La mémoire principale accède aux données avec une latence de 75 nanosecondes et un débit de 51 gigaoctets par seconde. Le bus d'interconnexion transporte 64 bits en parallèle à 1600 mégatransferts par seconde.
+
+Tension cœur : 1,1 volt nominal.
+Courant de fuite : 80 microampères par transistor.
+Densité d'intégration : 100 millions de portes par millimètre carré.
+Gravure : 5 nanomètres.
+Fréquence turbo : 5,2 gigahertz sur un cœur.
+Enveloppe thermique : 125 watts soutenus.
+Température de jonction maximale : 100 degrés Celsius.
+Résistance thermique : 0,15 kelvin par watt.
+
+Le module accélère 320 trillions d'opérations par seconde sur des tenseurs en précision mixte. La bande passante de la mémoire haute largeur atteint 3,35 téraoctets par seconde. Le refroidissement liquide évacue 700 watts à un débit de 2 litres par minute. L'alimentation stabilise 48 volts continus avec une ondulation résiduelle inférieure à 10 millivolts crête à crête.
+
+Précision : 16 bits virgule flottante.
+Sparsité structurée : 2 sur 4.
+Capacité embarquée : 141 gigaoctets.
+Interconnexion inter-puces : 900 gigaoctets par seconde.
+Instructions par cycle : 8 opérations fusionnées.
+Cohérence de cache : protocole MESI étendu.
+Synchronisation : horloge unique à 1,98 gigahertz.
+Fiabilité : un bit erroné toutes les 10 puissance 15 opérations.`;
+
+  function updateTechInfluence() {
+    const v = document.getElementById('influenceTech').value;
+    document.getElementById('influenceValTech').textContent = v + '%';
+  }
+
+  const ADMIN_CORPUS = `Le comité de pilotage prend acte des conclusions du groupe de travail et décide la constitution d'une commission chargée d'examiner l'opportunité d'une étude préalable. Les modalités de mise en œuvre feront l'objet d'une concertation élargie avec l'ensemble des parties prenantes. Un calendrier prévisionnel sera arrêté en temps utile.
+
+Référence : circulaire du 12 mars relative à l'application du décret susvisé.
+Objet : harmonisation des procédures de validation intermédiaire.
+Pièce jointe : annexe 4 bis, tableau de correspondance des nomenclatures.
+Transmission : sous couvert de la voie hiérarchique.
+Délai de réponse : dans les meilleurs délais.
+Suite à donner : classement provisoire en attente d'instruction.
+
+Il conviendra, le moment venu, d'envisager l'éventualité d'une réflexion sur la faisabilité d'une expérimentation. La question mérite un examen approfondi. Le dossier est à l'étude. Une réponse circonstanciée sera apportée dans les délais réglementaires, sous réserve des arbitrages budgétaires en cours.
+
+L'autorité compétente, sans préjudice des attributions dévolues aux services déconcentrés, et dans le strict respect du principe de subsidiarité, ne saurait s'engager à ce stade sur un dispositif dont le périmètre, les modalités et le financement demeurent à préciser.
+
+Avis favorable sous réserve.
+Avis réservé sous conditions.
+Décision reportée à la prochaine séance.
+Point d'étape : avancement conforme aux prévisions révisées.
+Indicateur de suivi : taux de réalisation des actions engagées.
+Comitologie : instance plénière, formation restreinte, bureau élargi.
+Gouvernance : co-construction, transversalité, montée en compétence.
+Livrables : note de cadrage, feuille de route, retour d'expérience.
+
+La présente note annule et remplace la note du même objet. Les dispositions transitoires restent applicables jusqu'à l'entrée en vigueur du nouveau dispositif, lequel prendra effet à une date fixée par arrêté. En cas de difficulté d'interprétation, il convient de se rapprocher du service instructeur.
+
+Considérant qu'il y a lieu de considérer, vu le vu, et après en avoir délibéré, le conseil décide de surseoir.
+
+L'enveloppe budgétaire sera mobilisée dans la limite des crédits disponibles.
+Les crédits disponibles seront ajustés au regard des besoins constatés.
+Les besoins constatés feront l'objet d'une remontée consolidée.
+La consolidation interviendra après fiabilisation des données.
+La fiabilisation est en cours.
+
+Au terme d'un dialogue constructif et dans un esprit de responsabilité partagée, les parties conviennent de poursuivre les échanges. Un relevé de conclusions sera diffusé aux membres. Les observations éventuelles devront parvenir au secrétariat avant la date limite, le cachet de la poste faisant foi.
+
+Nonobstant les stipulations antérieures, et sans qu'il soit besoin de statuer sur le surplus, la demande est réputée complète à la date de réception du dernier élément manquant, laquelle sera notifiée ultérieurement.
+
+Périmètre : à préciser.
+Modalités : à définir.
+Financement : à identifier.
+Portage : à confirmer.
+Échéance : glissante.
+Priorité : haute, parmi les autres priorités hautes.`;
+
+  function updateAdminInfluence() {
+    const v = document.getElementById('influenceAdmin').value;
+    document.getElementById('influenceValAdmin').textContent = v + '%';
+  }
+
+  const ARTICLES = new Set([
+    'le', 'la', 'les', 'l', 'un', 'une', 'des', 'du', 'de', 'au', 'aux',
+    'd', 'the', 'a', 'an', 'el', 'los', 'las', 'un', 'una', 'unos', 'unas', 'del'
+  ]);
+
+  function toggleFilter() {
+    filterArticles = !filterArticles;
+    document.getElementById('toggleFilter').classList.toggle('active', filterArticles);
+  }
+
+  function toggleFlow() {
+    flowMode = !flowMode;
+    document.getElementById('toggleFlow').classList.toggle('active', flowMode);
+  }
+
+  function updateMinLen() {
+    minWordLen = parseInt(document.getElementById('minLen').value);
+    document.getElementById('minLenVal').textContent = minWordLen;
+  }
+
+  function toggleUnlimited() {
+    unlimitedMode = !unlimitedMode;
+    const btn = document.getElementById('toggleUnlimited');
+    btn.classList.toggle('active', unlimitedMode);
+    updateControlsState();
+  }
+
+  // Grise les réglages qui ne s'appliquent pas au mode courant
+  function updateControlsState() {
+    document.getElementById('sizeControl').classList.toggle('is-off', currentMode !== 'group');
+    document.getElementById('outputLenWrap').classList.toggle('is-off', unlimitedMode);
+  }
+
+  function setMode(mode, btn) {
+    currentMode = mode;
+    document.querySelectorAll('.mode-btns button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    updateControlsState();
+  }
+
+  function updateSliderVal() {
+    const v = document.getElementById('fragSize').value;
+    document.getElementById('fragVal').textContent = v + ' mots';
+  }
+
+  function updateOutputLen() {
+    const v = document.getElementById('outputLen').value;
+    document.getElementById('outputVal').textContent = v + ' vers';
+  }
+
+  // Simple seeded PRNG (mulberry32)
+  function mulberry32(a) {
+    return function() {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
+  }
+
+  function shuffle(arr, rng) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function updateInfluence(n) {
+    const v = document.getElementById('influence' + n).value;
+    document.getElementById('influenceVal' + n).textContent = v + '%';
+  }
+
+  function collectTextsWeighted() {
+    const sources = [];
+    for (let i = 1; i <= 3; i++) {
+      const text = document.getElementById('text' + i).value.trim();
+      const influence = parseInt(document.getElementById('influence' + i).value) / 100;
+      if (text && influence > 0) {
+        sources.push({ text, influence });
+      }
+    }
+    // Corpus technique permanent
+    const techInfluence = parseInt(document.getElementById('influenceTech').value) / 100;
+    if (techInfluence > 0) {
+      sources.push({ text: TECH_CORPUS, influence: techInfluence });
+    }
+    // Corpus administratif permanent
+    const adminInfluence = parseInt(document.getElementById('influenceAdmin').value) / 100;
+    if (adminInfluence > 0) {
+      sources.push({ text: ADMIN_CORPUS, influence: adminInfluence });
+    }
+    return sources;
+  }
+
+  function collectTexts() {
+    return collectTextsWeighted().map(s => s.text);
+  }
+
+  function isArticle(word) {
+    // Strip punctuation for comparison, keep original
+    const clean = word.replace(/[.,;:!?'’‘"""()\[\]]/g, '').toLowerCase();
+    return ARTICLES.has(clean);
+  }
+
+  function filterWords(words) {
+    if (!filterArticles) return words;
+    return words.filter(w => !isArticle(w));
+  }
+
+  function splitWords(text) {
+    // Split on whitespace, apostrophes, hyphens, and punctuation
+    // "l'innocence" → ["l", "innocence"], "s'effilochaient" → ["s", "effilochaient"]
+    return text
+      .split(/[\s'’‘+\-—–.,;:!?"""()\[\]\/\\]+/)
+      .map(w => w.trim().toLowerCase())
+      .filter(w => w.length >= minWordLen); // curseur : 1 = tout, 2 = vire 1 lettre, 3 = vire ≤2, 4 = vire ≤3
+  }
+
+  function fragmentizeSource(text, mode, groupSize) {
+    if (mode === 'line') {
+      let lines = text.split(/\n+/).map(l => l.trim()).filter(l => l.length > 0);
+      // Filtre mots trop courts (toujours) et articles (si activé), casse et ponctuation conservées
+      lines = lines.map(line => {
+        const tokens = line.split(/\s+/).filter(tok => {
+          const clean = tok.replace(/[.,;:!?'’‘"""()\[\]]/g, '');
+          if (clean.length < minWordLen) return false;
+          if (filterArticles && isArticle(tok)) return false;
+          return true;
+        });
+        return tokens.join(' ');
+      }).filter(l => l.length > 0);
+      return lines;
+    }
+
+    if (mode === 'word') {
+      return filterWords(splitWords(text));
+    }
+
+    // Group mode
+    const words = filterWords(splitWords(text));
+    const fragments = [];
+    for (let i = 0; i < words.length; i += groupSize) {
+      const chunk = words.slice(i, i + groupSize).join(' ');
+      if (chunk) fragments.push(chunk);
+    }
+    return fragments;
+  }
+
+  function fragmentize(rng, mode, groupSize) {
+    // Use weighted sources: keep influence% of each source's fragments
+    const sources = collectTextsWeighted();
+    let allFragments = [];
+
+    for (const source of sources) {
+      const frags = fragmentizeSource(source.text, mode, groupSize);
+      // Keep influence% of fragments (randomly sampled)
+      const keepCount = Math.max(1, Math.round(frags.length * source.influence));
+      // Fisher-Yates seedé : échantillonnage non biaisé et reproductible via le seed
+      const shuffled = shuffle(frags, rng);
+      allFragments = allFragments.concat(shuffled.slice(0, keepCount));
+    }
+
+    return allFragments;
+  }
+
+  function buildOutput(shuffled, mode, numLines, rng, groupSize) {
+    // numLines = nombre de vers gardés (Infinity = tout). Le flux continu ne change que l'affichage.
+    let lines;
+    if (mode === 'line') {
+      lines = numLines === Infinity ? shuffled : shuffled.slice(0, numLines);
+    } else {
+      // Mots : ~5 mots par vers. Groupes : exactement un groupe par vers.
+      const base = mode === 'word' ? 5 : 1;
+      lines = [];
+      let idx = 0;
+      while (idx < shuffled.length && lines.length < numLines) {
+        const count = mode === 'word' ? Math.max(1, base + Math.floor(rng() * 3) - 1) : 1;
+        lines.push(shuffled.slice(idx, idx + count).join(' '));
+        idx += count;
+      }
+    }
+    return lines.join(flowMode ? ' ' : '\n');
+  }
+
+  function renderOutput(text) {
+    const output = document.getElementById('output');
+    output.classList.remove('paper-mode');
+    const lines = text.split('\n');
+
+    let html = '';
+    let delay = 0;
+    lines.forEach((line, li) => {
+      const words = line.split(/(\s+)/);
+      words.forEach(w => {
+        if (/^\s+$/.test(w)) {
+          html += w;
+        } else {
+          html += `<span class="fragment word-anim" style="animation-delay:${delay}ms">${w}</span>`;
+          delay += 30;
+        }
+      });
+      if (li < lines.length - 1) html += '\n';
+    });
+
+    output.innerHTML = `<div class="output-text" style="${flowMode ? 'white-space:normal' : ''}">${html}</div>`;
+  }
+
+  let lastSignature = '';
+
+  // Empreinte de tous les réglages qui changent les fragments
+  function settingsSignature() {
+    return JSON.stringify([
+      currentMode,
+      document.getElementById('fragSize').value,
+      filterArticles,
+      minWordLen,
+      collectTextsWeighted()
+    ]);
+  }
+
+  function run(refragment) {
+    const sources = collectTextsWeighted();
+    if (sources.length < 1) {
+      document.getElementById('output').innerHTML = '<div class="output-empty">Il faut au moins un texte...</div>';
+      return;
+    }
+
+    const groupSize = parseInt(document.getElementById('fragSize').value);
+    const numLines = unlimitedMode ? Infinity : parseInt(document.getElementById('outputLen').value);
+
+    currentSeed = Date.now() & 0xFFFFFFFF;
+    const rng = mulberry32(currentSeed);
+
+    if (refragment) {
+      lastFragments = fragmentize(rng, currentMode, groupSize);
+      lastSignature = settingsSignature();
+    }
+    const shuffled = shuffle(lastFragments, rng);
+    const result = buildOutput(shuffled, currentMode, numLines, rng, groupSize);
+
+    renderOutput(result);
+    document.getElementById('seedInfo').textContent = `seed: ${currentSeed} · ${lastFragments.length} fragments`;
+  }
+
+  function cutUp() { run(true); }
+
+  // Relancer : même tirage de fragments, nouvel ordre — sauf si un réglage a changé
+  function reroll() {
+    const changed = !lastFragments || lastFragments.length === 0 || settingsSignature() !== lastSignature;
+    run(changed);
+  }
+
+  function copyResult() {
+    const el = document.querySelector('.output-text');
+    const outputEl = document.getElementById('output');
+    if (!el) return;
+
+    // Bascule en mode papier (texte noir sur fond crème) avant de copier
+    outputEl.classList.add('paper-mode');
+
+    // Léger délai pour que la transition visuelle se fasse avant l'écriture clipboard
+    setTimeout(() => {
+      const text = el.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.btn-copy');
+        const orig = btn.textContent;
+        btn.textContent = '✓ Copié';
+        btn.style.color = 'var(--accent)';
+        btn.style.borderColor = 'var(--accent)';
+        setTimeout(() => {
+          btn.textContent = orig;
+          btn.style.color = '';
+          btn.style.borderColor = '';
+        }, 1500);
+      });
+    }, 60);
+  }
+
+  // Keyboard shortcut
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) cutUp();
+    if (e.key === 'r' && (e.ctrlKey || e.metaKey) && e.shiftKey) {
+      e.preventDefault();
+      reroll();
+    }
+  });
+
+  updateControlsState();
+</script>
+
+
+</body></html>
