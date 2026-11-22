@@ -941,7 +941,7 @@ Priorité : haute, parmi les autres priorités hautes.`;
 
   function isArticle(word) {
     // Strip punctuation for comparison, keep original
-    const clean = word.replace(/[.,;:!?'''"""()\[\]]/g, '').toLowerCase();
+    const clean = word.replace(/[.,;:!?'’‘"""()\[\]]/g, '').toLowerCase();
     return ARTICLES.has(clean);
   }
 
@@ -954,7 +954,7 @@ Priorité : haute, parmi les autres priorités hautes.`;
     // Split on whitespace, apostrophes, hyphens, and punctuation
     // "l'innocence" → ["l", "innocence"], "s'effilochaient" → ["s", "effilochaient"]
     return text
-      .split(/[\s'''+\-—–.,;:!?"""()\[\]\/\\]+/)
+      .split(/[\s'’‘+\-—–.,;:!?"""()\[\]\/\\]+/)
       .map(w => w.trim().toLowerCase())
       .filter(w => w.length >= minWordLen); // curseur : 1 = tout, 2 = vire 1 lettre, 3 = vire ≤2, 4 = vire ≤3
   }
@@ -965,7 +965,7 @@ Priorité : haute, parmi les autres priorités hautes.`;
       // Filtre mots trop courts (toujours) et articles (si activé), casse et ponctuation conservées
       lines = lines.map(line => {
         const tokens = line.split(/\s+/).filter(tok => {
-          const clean = tok.replace(/[.,;:!?'''"""()\[\]]/g, '');
+          const clean = tok.replace(/[.,;:!?'’‘"""()\[\]]/g, '');
           if (clean.length < minWordLen) return false;
           if (filterArticles && isArticle(tok)) return false;
           return true;
@@ -1012,11 +1012,12 @@ Priorité : haute, parmi les autres priorités hautes.`;
     if (mode === 'line') {
       lines = numLines === Infinity ? shuffled : shuffled.slice(0, numLines);
     } else {
-      const base = mode === 'word' ? 5 : Math.max(1, Math.round(6 / groupSize));
+      // Mots : ~5 mots par vers. Groupes : exactement un groupe par vers.
+      const base = mode === 'word' ? 5 : 1;
       lines = [];
       let idx = 0;
       while (idx < shuffled.length && lines.length < numLines) {
-        const count = Math.max(1, base + Math.floor(rng() * 3) - 1);
+        const count = mode === 'word' ? Math.max(1, base + Math.floor(rng() * 3) - 1) : 1;
         lines.push(shuffled.slice(idx, idx + count).join(' '));
         idx += count;
       }
